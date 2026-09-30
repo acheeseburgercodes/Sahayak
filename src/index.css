@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------
+   Theme tokens. Every colour in the app resolves through these so
+   the high-contrast and dark themes are a single attribute flip.
+   --------------------------------------------------------------- */
+:root {
+  --app-font: 'Segoe UI', 'Noto Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --app-scale: 1;
+
+  --c-ink: 23 27 33;
+  --c-muted: 95 105 120;
+  --c-surface: 246 247 249;
+  --c-panel: 255 255 255;
+  --c-line: 219 224 231;
+  --c-brand: 13 110 92;
+  --c-brand-ink: 255 255 255;
+  --c-danger: 190 30 40;
+  --c-warn: 176 104 0;
+  --c-ok: 21 122 74;
+}
+
+[data-theme='dark'] {
+  --c-ink: 232 236 241;
+  --c-muted: 152 163 178;
+  --c-surface: 15 18 22;
+  --c-panel: 24 28 34;
+  --c-line: 52 59 69;
+  --c-brand: 47 180 150;
+  --c-brand-ink: 8 20 17;
+  --c-danger: 255 120 125;
+  --c-warn: 240 176 70;
+  --c-ok: 90 214 150;
+}
+
+/* WCAG AAA-leaning high contrast mode, chosen explicitly by the user. */
+[data-contrast='high'] {
+  --c-ink: 0 0 0;
+  --c-muted: 32 32 32;
+  --c-surface: 255 255 255;
+  --c-panel: 255 255 255;
+  --c-line: 0 0 0;
+  --c-brand: 0 52 130;
+  --c-brand-ink: 255 255 255;
+  --c-danger: 158 0 0;
+  --c-warn: 105 60 0;
+  --c-ok: 0 82 41;
+}
+[data-theme='dark'][data-contrast='high'] {
+  --c-ink: 255 255 255;
+  --c-muted: 228 228 228;
+  --c-surface: 0 0 0;
+  --c-panel: 0 0 0;
+  --c-line: 255 255 255;
+  --c-brand: 120 220 255;
+  --c-brand-ink: 0 0 0;
+  --c-danger: 255 150 150;
+  --c-warn: 255 210 110;
+  --c-ok: 130 255 190;
+}
+[data-contrast='high'] * {
+  border-color: rgb(var(--c-line)) !important;
+}
+
+/* Dyslexia-friendly stack: wide apertures, loose tracking. */
+[data-font='readable'] {
+  --app-font: 'Verdana', 'Tahoma', 'Noto Sans', system-ui, sans-serif;
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+  line-height: 1.75;
+}
+
+html {
+  font-size: calc(100% * var(--app-scale));
+}
+
+body {
+  @apply bg-surface text-ink antialiased;
+  font-family: var(--app-font);
+  margin: 0;
+  min-height: 100dvh;
+}
+
+/* A visible, never-clipped focus ring — the single most important
+   keyboard-accessibility affordance. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid rgb(var(--c-brand));
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Respect the OS setting, and let the user force it from Settings. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion='reduced'] *,
+[data-motion='reduced'] *::before,
+[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* Screen-reader-only, but focusable (used by the skip link). */
+.sr-only-focusable {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.sr-only-focusable:focus {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  width: auto;
+  height: auto;
+  clip: auto;
+  margin: 0;
+  padding: 0.6rem 1rem;
+  @apply bg-brand text-brandInk font-semibold shadow-lg;
+}
+
+@layer components {
+  .card {
+    @apply bg-panel border border-line rounded-xl;
+  }
+  /* 44x44 minimum hit target — WCAG 2.5.5 / mobile one-handed use. */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-4 rounded-lg
+           border border-line font-medium transition-colors
+           hover:bg-surface disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply bg-brand text-brandInk border-brand hover:opacity-90 hover:bg-brand;
+  }
+  .btn-danger {
+    @apply bg-danger text-white border-danger hover:opacity-90;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line
+           px-3 py-1 text-xs font-semibold;
+  }
+  .field {
+    @apply w-full min-h-[44px] rounded-lg border border-line bg-panel px-3 py-2
+           text-ink placeholder:text-muted;
+  }
+  .label {
+    @apply block text-sm font-semibold mb-1;
+  }
+  /* Quiet square icon button that still meets the 44x44 target. */
+  .icon-btn {
+    @apply inline-grid place-items-center h-11 w-11 shrink-0 rounded-xl text-lg text-ink
+           transition-colors hover:bg-line/50 disabled:cursor-not-allowed;
+  }
+}
+
+/* Hide scrollbar chrome without removing keyboard scrollability. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--c-line)) transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgb(var(--c-line));
+  border-radius: 99px;
+}

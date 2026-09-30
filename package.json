@@ -1,0 +1,42 @@
+{
+  "name": "sahayak-ai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Multi-agent assistant for everyday survival services - ration, shelter, emergency, health, wages, documents - in Indian and regional languages via Sarvam AI.",
+  "scripts": {
+    "dev": "concurrently -n web,proxy -c cyan,magenta \"vite\" \"node server/proxy.mjs\"",
+    "dev:web": "vite",
+    "dev:proxy": "node server/proxy.mjs",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "typecheck": "tsc -b",
+    "smoke": "esbuild scripts/smoke.tsx --bundle --platform=node --format=cjs --outfile=node_modules/.cache/smoke.cjs --loader:.css=empty --log-level=warning && node node_modules/.cache/smoke.cjs",
+    "check:routing": "esbuild scripts/route-check.ts --bundle --platform=node --format=cjs --outfile=node_modules/.cache/route-check.cjs --log-level=warning && node node_modules/.cache/route-check.cjs",
+    "verify": "npm run typecheck && npm run check:routing && npm run smoke && npm run build"
+  },
+  "dependencies": {
+    "clsx": "2.1.1",
+    "lucide-react": "1.48.0",
+    "motion": "13.4.6",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tailwind-merge": "2.6.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "autoprefixer": "10.4.20",
+    "concurrently": "9.1.2",
+    "dotenv": "16.4.7",
+    "express": "4.21.2",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.6.3",
+    "vite": "5.4.11"
+  },
+  "allowScripts": {
+    "esbuild@0.21.5": true
+  }
+}

@@ -97,6 +97,9 @@ const checks: Array<[string, boolean]> = [
   // Double-encoded UTF-8 (e.g. "à¤" for Devanagari, "ðŸ" for emoji) means a
   // source file was re-saved in the wrong encoding.
   ['no mojibake in rendered text', !/à¤|à¥|ðŸ|â€/.test(html)],
+  ['accessibility toolbar on the page', html.includes('id="a11y-tools"')],
+  ['a11y toggles expose aria-pressed', (html.match(/aria-pressed="(true|false)"/g) ?? []).length >= 7],
+  ['text size stepper present', html.includes('Larger text') || html.includes('बड़े अक्षर')],
 ];
 
 // Farmer persona in English: its schemes, calendar and quick services render.

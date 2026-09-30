@@ -299,7 +299,7 @@ export function Dashboard({ onAsk, onPin, busyIds }: Props) {
           {shown.length === 0 ? (
             <p className="mt-4 text-sm">{s('noMatch')}</p>
           ) : (
-            <motion.ul layout className="mt-3 grid gap-3 md:grid-cols-2" role="list">
+            <motion.ul layout className="mt-4 grid gap-4 grid-cols-[repeat(auto-fill,minmax(min(100%,20rem),1fr))]" role="list">
               <AnimatePresence initial={false} mode="popLayout">
                 {shown.map(({ scheme, verdict }, i) => (
                   <motion.li

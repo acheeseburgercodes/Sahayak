@@ -16,6 +16,7 @@ import { MessageBubble } from './components/MessageBubble';
 import { Composer } from './components/Composer';
 import type { ComposerHandle } from './components/Composer';
 import { SettingsDrawer } from './components/SettingsDrawer';
+import { A11yBar } from './components/A11yBar';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { useConversation } from './hooks/useConversation';
 import { useSpeech } from './hooks/useSpeech';
@@ -136,6 +137,13 @@ export default function App() {
           document.getElementById('teammates')?.querySelector<HTMLElement>('button')?.focus(),
         );
       }
+      if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+        e.preventDefault();
+        if (!settings.a11yBar) set('a11yBar', true);
+        requestAnimationFrame(() =>
+          document.getElementById('a11y-tools')?.querySelector<HTMLElement>('button')?.focus(),
+        );
+      }
       if (e.ctrlKey && e.shiftKey && (e.key === 'd' || e.key === 'D')) {
         e.preventDefault();
         const next = !settings.devMode;
@@ -146,7 +154,7 @@ export default function App() {
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [announce, focusComposer, set, settings.devMode, showView, speech]);
+  }, [announce, focusComposer, set, settings.devMode, settings.a11yBar, showView, speech]);
 
   const handleForce = useCallback(
     (route: ForcedRoute | null) => {
@@ -234,6 +242,12 @@ export default function App() {
         view={view}
         onView={showView}
         assistantBadge={unseen}
+      />
+
+      <A11yBar
+        onRead={(text) => void speech.speak(text, settings.lang)}
+        onStopReading={speech.stopSpeaking}
+        speaking={speech.speaking}
       />
 
       {!online && (

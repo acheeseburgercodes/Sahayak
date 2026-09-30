@@ -186,6 +186,29 @@ export function SettingsDrawer({ open, onClose }: { open: boolean; onClose: () =
               checked={settings.motion === 'reduced'}
               onChange={(v) => set('motion', v ? 'reduced' : 'full')}
             />
+            <Toggle
+              label={s('wideSpacing')}
+              hint="Extra space between lines, letters and words."
+              checked={settings.spacing === 'wide'}
+              onChange={(v) => set('spacing', v ? 'wide' : 'normal')}
+            />
+            <Toggle
+              label={s('highlightLinks')}
+              hint="Underline and outline every link."
+              checked={settings.links === 'highlight'}
+              onChange={(v) => set('links', v ? 'highlight' : 'normal')}
+            />
+            <Toggle
+              label={s('bigCursor')}
+              checked={settings.cursor === 'big'}
+              onChange={(v) => set('cursor', v ? 'big' : 'normal')}
+            />
+            <Toggle
+              label={s('a11yShow')}
+              hint="Keep the accessibility toolbar at the top of the page (Alt+A)."
+              checked={settings.a11yBar}
+              onChange={(v) => set('a11yBar', v)}
+            />
           </div>
         </fieldset>
 

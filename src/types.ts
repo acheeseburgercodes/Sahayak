@@ -227,6 +227,13 @@ export interface Settings {
   contrast: 'normal' | 'high';
   font: 'default' | 'readable';
   motion: 'full' | 'reduced';
+  /** Underline + outline every link and button-link. */
+  links: 'normal' | 'highlight';
+  /** WCAG 1.4.12 text spacing (line, letter, word, paragraph). */
+  spacing: 'normal' | 'wide';
+  cursor: 'normal' | 'big';
+  /** Accessibility toolbar expanded on the page. */
+  a11yBar: boolean;
   /** 0.9 .. 1.6 */
   scale: number;
   /** Read every agent reply aloud automatically. */

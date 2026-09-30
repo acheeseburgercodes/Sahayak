@@ -5,12 +5,16 @@ import { PLACES } from '../lib/data';
 
 const KEY = 'sahayak.settings.v1';
 
-const DEFAULTS: Settings = {
+export const DEFAULTS: Settings = {
   lang: 'hi-IN',
   theme: 'light',
   contrast: 'normal',
   font: 'default',
   motion: 'full',
+  links: 'normal',
+  spacing: 'normal',
+  cursor: 'normal',
+  a11yBar: true,
   scale: 1,
   autoSpeak: false,
   showTrace: true,
@@ -61,6 +65,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     root.dataset.contrast = settings.contrast;
     root.dataset.font = settings.font;
     root.dataset.motion = settings.motion === 'reduced' ? 'reduced' : 'full';
+    root.dataset.links = settings.links;
+    root.dataset.spacing = settings.spacing;
+    root.dataset.cursor = settings.cursor;
     root.style.setProperty('--app-scale', String(settings.scale));
     root.lang = settings.lang;
   }, [settings]);

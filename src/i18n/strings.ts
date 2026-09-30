@@ -150,6 +150,19 @@ export const UI = {
   statDocs: 'documents ready',
   heroBadge: 'AI teammates · 11 languages · works offline',
   formalJob: 'Job with PF / ESIC',
+  a11yBar: 'Accessibility',
+  a11yShow: 'Show accessibility tools',
+  a11yHide: 'Hide accessibility tools',
+  textSmaller: 'Smaller text',
+  textLarger: 'Larger text',
+  textReset: 'Reset text size',
+  highlightLinks: 'Highlight links',
+  wideSpacing: 'Wider spacing',
+  bigCursor: 'Big cursor',
+  readSelection: 'Read selected text',
+  readPage: 'Read this page',
+  resetA11y: 'Reset all',
+  a11yReset: 'Accessibility settings reset',
 } as const;
 
 export type UiKey = keyof typeof UI;
@@ -290,6 +303,19 @@ const HI: Partial<Record<UiKey, string>> = {
   statDocs: 'कागज़ तैयार',
   heroBadge: 'AI साथी · 11 भाषाएँ · बिना इंटरनेट भी',
   formalJob: 'PF / ESIC वाली नौकरी',
+  a11yBar: 'सुगमता',
+  a11yShow: 'सुगमता के साधन दिखाएँ',
+  a11yHide: 'सुगमता के साधन छिपाएँ',
+  textSmaller: 'छोटे अक्षर',
+  textLarger: 'बड़े अक्षर',
+  textReset: 'अक्षर का आकार पहले जैसा',
+  highlightLinks: 'लिंक उभारें',
+  wideSpacing: 'खुली जगह',
+  bigCursor: 'बड़ा कर्सर',
+  readSelection: 'चुना हुआ पढ़कर सुनाएँ',
+  readPage: 'यह पेज सुनाएँ',
+  resetA11y: 'सब पहले जैसा',
+  a11yReset: 'सुगमता सेटिंग पहले जैसी कर दी गई',
 };
 
 const TABLES: Partial<Record<LangCode, Partial<Record<UiKey, string>>>> = {

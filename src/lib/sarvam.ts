@@ -1,5 +1,8 @@
 import type { LangCode } from '../types';
 import { langByCode } from '../i18n/languages';
+import { isAndroid } from './platform';
+import { readAndroidKey } from './sarvamKey';
+import { directJson, directStt } from './sarvamDirect';
 
 /**
  * Sarvam AI client. Every request goes to the LOCAL proxy at /sarvam/* which
@@ -20,27 +23,44 @@ export function sarvamProbed(): boolean {
   return probed;
 }
 
-/** Called once at startup. Never throws. */
+type Listener = (available: boolean) => void;
+const listeners = new Set<Listener>();
+
+/** Re-render hooks (e.g. the demo banner) when a key is added or removed. */
+export function onSarvamAvailability(fn: Listener): () => void {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+
+/** Called at startup and after a key is saved/cleared. Never throws. */
 export async function probeSarvam(): Promise<boolean> {
   try {
-    const res = await fetch(`${BASE}/health`, { method: 'GET' });
-    if (!res.ok) throw new Error(String(res.status));
-    const body = (await res.json()) as { configured?: boolean };
-    available = Boolean(body.configured);
+    if (isAndroid()) {
+      // No proxy on a phone: "configured" simply means a key is saved.
+      available = Boolean(await readAndroidKey());
+    } else {
+      const res = await fetch(`${BASE}/health`, { method: 'GET' });
+      if (!res.ok) throw new Error(String(res.status));
+      const body = (await res.json()) as { configured?: boolean };
+      available = Boolean(body.configured);
+    }
   } catch {
     available = false;
   }
   probed = true;
+  listeners.forEach((fn) => fn(available));
   return available;
 }
 
 async function post<T>(path: string, body: unknown, signal?: AbortSignal): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal,
-  });
+  const res = isAndroid()
+    ? await directJson(path, body as Record<string, unknown>, await readAndroidKey(), signal)
+    : await fetch(`${BASE}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal,
+      });
   if (!res.ok) {
     const text = await res.text().catch(() => '');
     throw new Error(`Sarvam ${path} failed (${res.status}): ${text.slice(0, 200)}`);
@@ -166,7 +186,9 @@ export async function sarvamTranscribe(
     const form = new FormData();
     form.append('file', blob, 'speech.webm');
     form.append('language_code', lang);
-    const res = await fetch(`${BASE}/stt`, { method: 'POST', body: form });
+    const res = isAndroid()
+      ? await directStt(form, await readAndroidKey())
+      : await fetch(`${BASE}/stt`, { method: 'POST', body: form });
     if (!res.ok) throw new Error(String(res.status));
     const data = (await res.json()) as SttResponse;
     if (!data.transcript) return null;

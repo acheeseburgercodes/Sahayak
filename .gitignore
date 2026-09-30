@@ -5,3 +5,11 @@ dist/
 *.log
 *.tsbuildinfo
 .DS_Store
+# Built binaries (desktop exe folder, APKs) — rebuilt from source
+release/
+# Android build output / machine-local SDK path
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+scripts/envcheck.ps1

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { LangCode } from '../types';
 import { sarvamAvailable, sarvamSpeak, sarvamTranscribe, stripMarkup } from '../lib/sarvam';
+import { isDesktop } from '../lib/platform';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type SpeechRecognitionLike = {
@@ -17,6 +18,9 @@ type SpeechRecognitionLike = {
 
 function recognitionCtor(): (new () => SpeechRecognitionLike) | null {
   if (typeof window === 'undefined') return null;
+  // Electron exposes webkitSpeechRecognition but has no Google speech backend
+  // (it fails with "network"), so the desktop app records and uses Sarvam.
+  if (isDesktop()) return null;
   const w = window as any;
   return w.SpeechRecognition || w.webkitSpeechRecognition || null;
 }

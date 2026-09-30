@@ -19,7 +19,9 @@ import { SettingsDrawer } from './components/SettingsDrawer';
 import { Dashboard } from './components/dashboard/Dashboard';
 import { useConversation } from './hooks/useConversation';
 import { useSpeech } from './hooks/useSpeech';
-import { probeSarvam, sarvamAvailable } from './lib/sarvam';
+import { onSarvamAvailability, probeSarvam, sarvamAvailable } from './lib/sarvam';
+import { isAndroid } from './lib/platform';
+import { App as CapApp } from '@capacitor/app';
 import { personaOf } from './dashboard/personas';
 
 export default function App() {
@@ -53,9 +55,30 @@ export default function App() {
     onAnswer,
   });
 
-  // Probe the proxy once so the UI can honestly say whether it is in demo mode.
+  // Probe the proxy so the UI can honestly say whether it is in demo mode, and
+  // re-probe when a key is saved/cleared in the desktop or Android app.
   useEffect(() => {
-    void probeSarvam().then((ok) => setDemoMode(!ok));
+    const off = onSarvamAvailability((ok) => setDemoMode(!ok));
+    void probeSarvam();
+    return off;
+  }, []);
+
+  // Android hardware back: close Settings first, then leave the assistant
+  // pane for the services pane, and only then let the OS minimise the app.
+  const backState = useRef({ settingsOpen, view });
+  backState.current = { settingsOpen, view };
+  useEffect(() => {
+    if (!isAndroid()) return;
+    let remove: (() => void) | undefined;
+    void CapApp.addListener('backButton', () => {
+      const st = backState.current;
+      if (st.settingsOpen) setSettingsOpen(false);
+      else if (st.view === 'assistant' && window.innerWidth < 1024) setView('services');
+      else void CapApp.minimizeApp();
+    }).then((h) => {
+      remove = () => void h.remove();
+    });
+    return () => remove?.();
   }, []);
 
   useEffect(() => {

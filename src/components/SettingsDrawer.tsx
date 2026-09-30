@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSettings } from '../context/SettingsContext';
 import { makeT } from '../i18n/strings';
 import { LanguagePicker } from './LanguagePicker';
+import { AiKeySection } from './AiKeySection';
 import { PLACES } from '../lib/data';
 import { useAnnounce } from '../context/AnnouncerContext';
 
@@ -109,6 +110,8 @@ export function SettingsDrawer({ open, onClose }: { open: boolean; onClose: () =
           </legend>
           <LanguagePicker />
         </fieldset>
+
+        <AiKeySection announce={announce} />
 
         <fieldset className="mb-5">
           <legend className="text-xs font-bold uppercase tracking-wide text-muted mb-2">

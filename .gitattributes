@@ -1,0 +1,5 @@
+# Unix shell scripts must keep LF endings or they fail with "bad interpreter" on Linux/macOS.
+android/gradlew text eol=lf
+*.sh text eol=lf
+# Windows batch files need CRLF.
+*.bat text eol=crlf
